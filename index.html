@@ -192,15 +192,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-  // SUPABASE INSTÄLLNINGAR
-
+  // Supabase koppling
   const SUPABASE_URL = "https://puquxestvywtpsfjaykt.supabase.co";
-
   const SUPABASE_ANON_KEY = "sb_publishable_C11GMBziDGuOCBp9gGBM3A_yr9_8cxw";
-
   const TARGET = 1000;
-
-  // SKAPA DATABASKOPPLING
 
   const db = window.supabase.createClient(
     SUPABASE_URL,
@@ -226,9 +221,7 @@
       statusEl.textContent = "Tack för ditt stöd!";
     }
   }
-
   // UPPDATERA RÄKNAREN
-
   function renderCount(count) {
     const safeCount = Math.max(0, Number(count) || 0);
 
@@ -260,16 +253,13 @@
     event.preventDefault();
 
     // Kontrollera om besökaren redan har skrivit under.
-
     if (localStorage.getItem(SIGNED_KEY) === "yes") {
       checkPreviousSignature();
       return;
     }
-
     const name = nameInput.value
       .trim()
       .replace(/\s+/g, " ");
-
     if (!name || name.length > 40) {
       statusEl.textContent =
         "Skriv ett namn eller smeknamn.";
@@ -281,7 +271,6 @@
     statusEl.textContent = "";
 
     // Spara underskriften i Supabase.
-
     const { error } = await db
       .from("signatures")
       .insert({
@@ -290,10 +279,8 @@
 
     if (error) {
       console.error(error);
-
       statusEl.textContent =
         "Underskriften kunde inte sparas. Försök igen.";
-
       button.disabled = false;
       button.textContent = "SKRIV UNDER";
 
@@ -301,28 +288,19 @@
     }
 
     // Markera att denna webbläsare har skrivit under.
-
     localStorage.setItem(SIGNED_KEY, "yes");
-
     nameInput.value = "";
-
     checkPreviousSignature();
-
     statusEl.textContent =
       "Tack! Din underskrift är registrerad.";
-
     // Hämta det nya antalet.
-
     await refreshCount();
   });
 
-  // STARTA SIDAN
-
   checkPreviousSignature();
   refreshCount();
-
+  
   // Uppdatera räknaren var 15:e sekund.
-
   setInterval(refreshCount, 15000);
 
 </script>
