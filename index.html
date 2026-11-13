@@ -212,10 +212,7 @@
   const button = document.getElementById("submit-button");
   const statusEl = document.getElementById("status");
 
-  // SKYDD MOT FLERA UNDERSKRIFTER
-  // Sparas i besökarens webbläsare.
-
-  const SIGNED_KEY = "tee-in-already-signed";
+  const SIGNED_KEY = "tee-in-already-signed-v2";
 
   function checkPreviousSignature() {
     if (localStorage.getItem(SIGNED_KEY) === "yes") {
