@@ -1,21 +1,22 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101010">
   <title>TEE IN</title>
-  <meta name="description" content="Skriv under namninsamlingen TEE IN.">
+
   <style>
     :root {
-      color-scheme: dark;
       --bg: #101010;
-      --panel: #181818;
       --green: #22c55e;
       --muted: #a3a3a3;
       --line: #383838;
     }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -23,13 +24,15 @@
       place-items: center;
       padding: 28px 18px;
       background: var(--bg);
-      color: #fff;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: white;
+      font-family: Arial, sans-serif;
     }
+
     main {
       width: min(100%, 620px);
       text-align: center;
     }
+
     h1 {
       margin: 0;
       color: var(--green);
@@ -38,27 +41,29 @@
       letter-spacing: -.075em;
       font-weight: 950;
     }
+
     .subtitle {
       margin: 26px 0 30px;
       font-size: clamp(1rem, 3vw, 1.35rem);
       font-weight: 750;
-      letter-spacing: .035em;
       text-transform: uppercase;
     }
+
     .counter {
       margin: 0;
       font-size: clamp(2.4rem, 9vw, 4.4rem);
-      line-height: 1;
       font-weight: 850;
       font-variant-numeric: tabular-nums;
     }
+
     .counter-label {
       margin: 12px 0 18px;
       color: var(--muted);
       font-size: .75rem;
-      font-weight: 700;
+      font-weight: bold;
       letter-spacing: .18em;
     }
+
     .progress {
       height: 10px;
       overflow: hidden;
@@ -66,6 +71,7 @@
       background: var(--line);
       margin-bottom: 30px;
     }
+
     .progress-fill {
       width: 0%;
       height: 100%;
@@ -73,176 +79,254 @@
       background: var(--green);
       transition: width .35s ease;
     }
+
     form {
       display: grid;
       gap: 12px;
       text-align: left;
     }
+
     label {
       color: var(--muted);
       font-size: .9rem;
     }
+
     input {
       width: 100%;
       min-height: 58px;
       padding: 0 17px;
       border: 1px solid #555;
       border-radius: 10px;
-      outline: none;
-      background: var(--panel);
-      color: #fff;
-      font: inherit;
+      background: #181818;
+      color: white;
       font-size: 1rem;
     }
-    input:focus { border-color: var(--green); box-shadow: 0 0 0 3px #22c55e22; }
+
+    input:focus {
+      outline: 2px solid var(--green);
+    }
+
     button {
       min-height: 58px;
       border: 0;
       border-radius: 10px;
       background: var(--green);
       color: #07130b;
-      font: inherit;
       font-size: 1.05rem;
       font-weight: 900;
-      letter-spacing: .035em;
       cursor: pointer;
-      transition: filter .15s ease, transform .15s ease;
     }
-    button:hover { filter: brightness(1.07); }
-    button:active { transform: scale(.99); }
-    button:disabled { cursor: wait; opacity: .65; }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: .65;
+    }
+
     .privacy, .status {
       color: var(--muted);
       font-size: .82rem;
       line-height: 1.5;
       text-align: center;
     }
-    .privacy { margin: 18px 0 0; }
-    .status { min-height: 1.3em; margin: 12px 0 0; }
-    .setup-warning {
-      margin-top: 24px;
-      padding: 12px;
-      border: 1px solid #8a6d2d;
-      border-radius: 8px;
-      color: #f5d78e;
-      font-size: .85rem;
-      line-height: 1.45;
-    }
+
+    .privacy { margin-top: 18px; }
+    .status { min-height: 1.3em; }
+
     .hidden { display: none; }
   </style>
 </head>
+
 <body>
-  <main>
-    <h1>TEE IN</h1>
-    <p class="subtitle">SKRIV UNDER FÖR VÅR BRODER</p>
+<main>
 
-    <section aria-label="Antal underskrifter">
-      <p class="counter"><span id="count">0</span> / 1 000</p>
-      <p class="counter-label">UNDERSKRIFTER</p>
-      <div class="progress" aria-label="Framsteg mot 1 000 underskrifter">
-        <div class="progress-fill" id="progress"></div>
-      </div>
-    </section>
+  <h1>TEE IN</h1>
 
-    <form id="signature-form">
-      <label for="signer-name">Ditt namn eller smeknamn</label>
-      <input id="signer-name" name="name" type="text" maxlength="40"
-             autocomplete="nickname" placeholder="Skriv ditt namn här"
-             required>
-      <button id="submit-button" type="submit">SKRIV UNDER</button>
-    </form>
+  <p class="subtitle">SKRIV UNDER FÖR VÅR BRODER</p>
 
-    <p class="privacy">Underskrifterna visas inte offentligt. Endast totalsiffran visas.</p>
-    <p class="status" id="status" role="status" aria-live="polite"></p>
-    <p class="setup-warning hidden" id="setup-warning">
-      Webbplatsen behöver kopplas till Supabase innan underskrifter kan sparas.
+  <section>
+    <p class="counter">
+      <span id="count">0</span> / 1 000
     </p>
-  </main>
 
-  <!-- Supabase-inställningar: fyll i efter att du skapat projektet. -->
-  <script>
-    const SUPABASE_URL = "https://puquxestvywtpsfjaykt.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_C11GMBziDGuOCBp9gGBM3A_yr9_8cxw";
-    const TARGET = 1000;
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const countEl = document.getElementById("count");
-    const progressEl = document.getElementById("progress");
-    const form = document.getElementById("signature-form");
-    const nameInput = document.getElementById("signer-name");
-    const button = document.getElementById("submit-button");
-    const statusEl = document.getElementById("status");
-    const setupWarning = document.getElementById("setup-warning");
+    <p class="counter-label">UNDERSKRIFTER</p>
 
-    const configured =
-      SUPABASE_URL.startsWith("https://") &&
-      !SUPABASE_URL.includes("DIN_SUPABASE") &&
-      SUPABASE_ANON_KEY.length > 20 &&
-      !SUPABASE_ANON_KEY.includes("DIN_SUPABASE");
+    <div class="progress">
+      <div class="progress-fill" id="progress"></div>
+    </div>
+  </section>
 
-    let supabaseClient = null;
-    if (configured && window.supabase) {
-      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    } else {
-      setupWarning.classList.remove("hidden");
+  <form id="signature-form">
+
+    <label for="signer-name">
+      Ditt namn eller smeknamn
+    </label>
+
+    <input
+      id="signer-name"
+      type="text"
+      maxlength="40"
+      placeholder="Skriv ditt namn här"
+      autocomplete="nickname"
+      required
+    >
+
+    <button id="submit-button" type="submit">
+      SKRIV UNDER
+    </button>
+
+  </form>
+
+  <p class="privacy">
+    Alla underskrifter är privata.
+    Endast det totala antalet visas.
+  </p>
+
+  <p class="status" id="status" role="status"></p>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  // SUPABASE INSTÄLLNINGAR
+
+  const SUPABASE_URL =
+    "https://zbwulctdwubmzhdsgete.supabase.co";
+
+  const SUPABASE_ANON_KEY =
+    "DIN_SUPABASE_PUBLISHABLE_KEY";
+
+  const TARGET = 1000;
+
+  // SKAPA DATABASKOPPLING
+
+  const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+  // ELEMENT
+
+  const countEl = document.getElementById("count");
+  const progressEl = document.getElementById("progress");
+  const form = document.getElementById("signature-form");
+  const nameInput = document.getElementById("signer-name");
+  const button = document.getElementById("submit-button");
+  const statusEl = document.getElementById("status");
+
+  // SKYDD MOT FLERA UNDERSKRIFTER
+  // Sparas i besökarens webbläsare.
+
+  const SIGNED_KEY = "tee-in-already-signed";
+
+  function checkPreviousSignature() {
+    if (localStorage.getItem(SIGNED_KEY) === "yes") {
+      nameInput.disabled = true;
       button.disabled = true;
-      statusEl.textContent = "Databasen är inte konfigurerad ännu.";
+      button.textContent = "DU HAR REDAN SKRIVIT UNDER";
+      statusEl.textContent = "Tack för ditt stöd!";
+    }
+  }
+
+  // UPPDATERA RÄKNAREN
+
+  function renderCount(count) {
+    const safeCount = Math.max(0, Number(count) || 0);
+
+    countEl.textContent =
+      safeCount.toLocaleString("sv-SE");
+
+    progressEl.style.width =
+      Math.min(100, (safeCount / TARGET) * 100) + "%";
+  }
+
+  async function refreshCount() {
+    const { data, error } = await db.rpc(
+      "get_signature_count"
+    );
+
+    if (error) {
+      console.error(error);
+      statusEl.textContent =
+        "Kunde inte hämta underskrifterna just nu.";
+      return;
     }
 
-    function renderCount(count) {
-      const safeCount = Math.max(0, Number(count) || 0);
-      countEl.textContent = safeCount.toLocaleString("sv-SE");
-      progressEl.style.width = Math.min(100, (safeCount / TARGET) * 100) + "%";
+    renderCount(data);
+  }
+
+  // SKRIV UNDER
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    // Kontrollera om besökaren redan har skrivit under.
+
+    if (localStorage.getItem(SIGNED_KEY) === "yes") {
+      checkPreviousSignature();
+      return;
     }
 
-    async function refreshCount() {
-      if (!supabaseClient) return;
-      const { data, error } = await supabaseClient.rpc("get_signature_count");
-      if (error) {
-        statusEl.textContent = "Kunde inte hämta underskrifterna just nu.";
-        console.error(error);
-        return;
-      }
-      renderCount(data);
+    const name = nameInput.value
+      .trim()
+      .replace(/\s+/g, " ");
+
+    if (!name || name.length > 40) {
+      statusEl.textContent =
+        "Skriv ett namn eller smeknamn.";
+      return;
     }
 
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      if (!supabaseClient) return;
+    button.disabled = true;
+    button.textContent = "SKICKAR...";
+    statusEl.textContent = "";
 
-      const name = nameInput.value.trim().replace(/\s+/g, " ");
-      if (!name || name.length > 40) {
-        statusEl.textContent = "Skriv ett namn eller smeknamn (max 40 tecken).";
-        return;
-      }
+    // Spara underskriften i Supabase.
 
-      button.disabled = true;
-      button.textContent = "SKICKAR...";
-      statusEl.textContent = "";
+    const { error } = await db
+      .from("signatures")
+      .insert({
+        display_name: name
+      });
 
-      const { error } = await supabaseClient
-        .from("signatures")
-        .insert({ display_name: name });
+    if (error) {
+      console.error(error);
 
-      if (error) {
-        statusEl.textContent = "Underskriften kunde inte sparas. Försök igen.";
-        console.error(error);
-      } else {
-        nameInput.value = "";
-        statusEl.textContent = "Tack! Din underskrift är registrerad.";
-        await refreshCount();
-      }
+      statusEl.textContent =
+        "Underskriften kunde inte sparas. Försök igen.";
 
       button.disabled = false;
       button.textContent = "SKRIV UNDER";
-    });
 
-    if (supabaseClient) {
-      refreshCount();
-      // Uppdatera siffran regelbundet på öppna sidor.
-      setInterval(refreshCount, 15000);
+      return;
     }
-  </script>
+
+    // Markera att denna webbläsare har skrivit under.
+
+    localStorage.setItem(SIGNED_KEY, "yes");
+
+    nameInput.value = "";
+
+    checkPreviousSignature();
+
+    statusEl.textContent =
+      "Tack! Din underskrift är registrerad.";
+
+    // Hämta det nya antalet.
+
+    await refreshCount();
+  });
+
+  // STARTA SIDAN
+
+  checkPreviousSignature();
+  refreshCount();
+
+  // Uppdatera räknaren var 15:e sekund.
+
+  setInterval(refreshCount, 15000);
+
+</script>
+
 </body>
 </html>
